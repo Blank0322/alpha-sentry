@@ -1,0 +1,28 @@
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+
+# env / secrets
+.env
+.env.*
+
+# local state
+*.db
+*.sqlite
+*.log
+
+# telegram/telethon sessions (NEVER COMMIT)
+*.session
+*.session-journal
+
+# editors
+.vscode/
+*.code-workspace
+.DS_Store
+
+# allow env template
+!.env.example
