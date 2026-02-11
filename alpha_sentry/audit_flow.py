@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 
-from .llm import build_client
 from .models import AuditDecision, KolSignal, SwapEvent
 
 
@@ -25,6 +24,10 @@ def build_payload(swaps: list[dict], kols: list[dict]) -> str:
 def llm_audit(gemini_api_key: str, swaps: list[dict], kols: list[dict]) -> AuditDecision | None:
     if not gemini_api_key:
         return None
+
+    # lazy import so non-LLM smoke checks can run without full deps
+    from .llm import build_client
+
     model = build_client(gemini_api_key)
     resp = model.generate_content(PROMPT + "\n" + build_payload(swaps, kols))
     try:
