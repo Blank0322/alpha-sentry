@@ -1,44 +1,55 @@
-# Alpha-Sentry
+# Alpha-Sentry (Execution Sentry)
 
-Real-time signal ingestion → dedupe → LLM triage → alerting.
+Real-time signal ingestion → LLM triage → **execution checklist generation**.
 
-This repo is a cleaned, public-friendly version of a personal monitoring tool. **Secrets, session files, and local logs are intentionally excluded.**
+This repository is a cleaned, public-friendly version of a personal monitoring tool. Sensitive artifacts (`.session`, logs, local DB, secrets) are intentionally excluded.
 
-## What it does
+## Positioning
 
-- Listens to a Telegram channel (via Telethon)
-- Deduplicates + stores messages locally (SQLite)
-- Uses an LLM (Gemini) to classify whether a message is actionable
-- Sends alerts (Pushover) immediately or schedules a wake-up reminder
+Not a full auto-trading bot.
 
-## Architecture (high level)
+Alpha-Sentry is an **execution sentry**:
+- catch time-sensitive signals early,
+- classify urgency,
+- output a structured action plan,
+- keep a human approval gate before any execution.
+
+## Pipeline
 
 ```text
-Telegram → Ingest → Dedupe → Persist → LLM Triage → Alert Router → (Immediate | Scheduled)
+Telegram Ingest -> Dedupe -> SQLite Log -> LLM Triage -> Action Plan -> Alert
 ```
 
-## Quick start
+## Repository map
 
-1) Create a virtualenv and install deps:
+- `alpha_sentry/`
+  - `config.py` settings loader
+  - `storage.py` sqlite models + persistence
+  - `llm.py` Gemini triage wrapper
+  - `alerts.py` pushover client
+  - `execution.py` rule-based execution plan builder
+- `scripts/run.py` live listener
+- `scripts/simulate_execution.py` local demo for action-plan routing
+- `docs/ARCHITECTURE.md`
+- `docs/PLAYBOOK.md`
+
+## Quick start
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-2) Copy env template:
-
-```bash
 cp .env.example .env
-```
-
-3) Run:
-
-```bash
 python scripts/run.py
 ```
 
-## Notes
+## Demo (no credentials needed)
 
-- You must provide your own Telegram API ID/HASH and create a session locally.
-- Do not commit `.session` files.
+```bash
+python scripts/simulate_execution.py
+```
+
+## Safety
+
+- Never commit `.session` files.
+- Never auto-execute trades without explicit human confirmation.
+- Keep source links in logs for post-mortem audit.
