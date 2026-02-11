@@ -18,6 +18,7 @@ Alpha-Sentry is an **execution sentry**:
 
 ```text
 Telegram Ingest -> Dedupe -> SQLite Log -> LLM Triage -> Action Plan -> Alert
+On-chain Swap Poll + KOL Signals -> LLM Audit Fusion -> Severity/Action
 ```
 
 ## Repository map
